@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -26,6 +27,7 @@ public class MyWhiteboard {
   public void broadcastFigure(Figure figure, Session session) throws IOException, EncodeException {
     System.out.println("broadcastFigure: " + figure);
     for (Session peer : peers) {
+      System.out.println("peer: " + peer);
       if (!peer.equals(session)) {
         peer.getBasicRemote().sendObject(figure);
       }
@@ -40,5 +42,10 @@ public class MyWhiteboard {
   @OnClose
   public void onClose(Session peer) {
     peers.remove(peer);
+  }
+
+  @OnError
+  public void onError(Throwable t) {
+    System.out.println("onError: " + t.getMessage());
   }
 }
